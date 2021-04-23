@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+  <meta name="description" content="A Quick and dirty Teleprompter" />
+  <link href="https://www.cssscript.com/wp-includes/css/sticky.css" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/customize-presets.css">
+  <link rel="stylesheet" href="lib/presets/p1.css">
+  <link rel="stylesheet" href="lib/presets/p2.css">
+  <link rel="stylesheet" href="lib/presets/p3.css">
+  <link rel="stylesheet" href="lib/presets/p4.css">
+  <link rel="stylesheet" href="lib/presets/p5.css">
+
+  <script type="text/javascript" src="/dist/knob.js"></script>
+  <script type="text/javascript" src="lib/presets/p1.js"></script>
+  <script type="text/javascript" src="lib/presets/p2.js"></script>
+  <script type="text/javascript" src="lib/presets/p3.js"></script>
+  <script type="text/javascript" src="lib/presets/p4.js"></script>
+  <script type="text/javascript" src="lib/presets/p5.js"></script>
+  <link href="https://fonts.googleapis.com/css?family=PT+Sans:400,700" rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Lekton:400italic" rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Titillium+Web:400,600,400italic,700" rel="stylesheet"
+    type="text/css">
+</head>
+  <body>
+  <script >  Ui.Demo = function() {
+
+    };
+
+    Ui.Demo.prototype = Object.create(Ui.prototype);
+
+    Ui.Demo.prototype.createElement = function() {
+    "use strict";
+    Ui.prototype.createElement.apply(this, arguments);
+    this.addComponent(new Ui.Pointer({
+    type: 'Rect',
+    pointerWidth: 3,
+    pointerHeight: this.width / 5,
+    offset: this.width / 2 - this.width / 3.3 - this.width / 10
+    }));
+
+    this.addComponent(new Ui.Scale(this.merge(this.options, {
+    drawScale: false,
+    drawDial: true,
+    radius: this.width/2.6})));
+
+    var circle = new Ui.El.Circle(this.width / 3.3, this.width / 2, this.height / 2);
+    this.el.node.appendChild(circle.node);
+    this.el.node.setAttribute("class", "Demo");
+    };
+    </script>
+<div id="teleprompter">
+
+</div>
+<div id="controls">
+  <div id="knob">
+<input class="preset2" type="range" min="0" max="10" data-width="200" data-height="200" data-angleoffset="220"
+  data-anglerange="280" tabindex="-1" style="position: absolute; top: -10000px;">
+<svg version="1.2" baseProfile="tiny" width="200" height="200" class="p2">
+  <path
+    d="M164.27876096865396,176.6044443118978 A100,100 0 1 0 35.72123903134607,176.6044443118978L48.57699122507686,161.28355544951825 A80,80 0 1 1 151.42300877492318,161.28355544951822L164.27876096865396,176.6044443118978">
+  </path>
+  <path
+    d="M99.99999999999999,0 A100,100 0 0 0 35.72123903134607,176.6044443118978L48.57699122507686,161.28355544951825 A80,80 0 0 1 99.99999999999999,20L99.99999999999999,0">
+  </path>
+  <rect x="90" y="0" width="20" height="100" class=" pointer" transform="rotate(360 100 100)"></rect>
+</svg></div>
+<script type="text/javascript">
+
+  /**
+   * Just a lazy way to convert all inputs into knobs.
+   * Normally you would write `new Knob(document.getElementById('someIdHere'), new Ui.P1());` to create a knob.
+   */
+
+  for (var i = 1; i < 6; i++) {
+    Array.prototype.slice.call(document.getElementsByClassName('preset' + i)).forEach(function (el) {
+      new Knob(el, new Ui['P' + i]());
+      el.addEventListener('change', function () {
+        console.log(el.value)
+      })
+    })
+  }
+
+  /**
+   * Create a simple slider with just a scale
+   */
+  var ScaleExample = function () { };
+
+  ScaleExample.prototype = Object.create(Ui.prototype);
+
+  ScaleExample.prototype.createElement = function () {
+
+    Ui.prototype.createElement.apply(this, arguments);
+    this.addComponent(new Ui.Scale({
+      drawScale: true,
+      drawDial: false,
+      steps: 30,
+      tickWidth: 10,
+      tickHeight: 10,
+      type: 'Triangle'
+    }));
+    this.el.node.setAttribute("class", "scaleExample");
+  }
+
+  new Knob(document.getElementsByClassName('scaleExample')[0], new ScaleExample());
+
+  /**
+   * Create a simple slider with just a dial
+   */
+  var DialExample = function () { };
+
+  DialExample.prototype = Object.create(Ui.prototype);
+
+  DialExample.prototype.createElement = function () {
+
+    Ui.prototype.createElement.apply(this, arguments);
+    this.addComponent(new Ui.Scale({
+      drawScale: false,
+      drawDial: true,
+      steps: 10
+    }));
+    this.el.node.setAttribute("class", "dialExample");
+  };
+  new Knob(document.getElementsByClassName('dialExample')[0], new DialExample());
+
+  /**
+   * Create a simple slider with just a pointer
+   */
+  var PointerExample = function () { };
+
+  PointerExample.prototype = Object.create(Ui.prototype);
+
+  PointerExample.prototype.createElement = function () {
+
+    Ui.prototype.createElement.apply(this, arguments);
+    this.addComponent(new Ui.Pointer({
+      type: 'Circle',
+      pointerWidth: 3,
+      pointerHeight: this.width / 5,
+      offset: this.width / 2 - this.width / 3.3 - this.width / 10
+    }));
+    this.el.node.setAttribute("class", "pointerExample");
+  };
+  new Knob(document.getElementsByClassName('pointerExample')[0], new PointerExample());
+
+  /**
+   * Create a simple slider with just an acr
+   */
+  var Arcxample = function () { };
+
+  Arcxample.prototype = Object.create(Ui.prototype);
+
+  Arcxample.prototype.createElement = function () {
+
+    Ui.prototype.createElement.apply(this, arguments);
+    this.addComponent(new Ui.Arc({
+      arcWidth: this.width / 10
+    }));
+    this.el.node.setAttribute("class", "arcExample");
+  };
+  new Knob(document.getElementsByClassName('arcExample')[0], new Arcxample());
+
+</script>
+
+</div>
+<div id="script">
+
+</div>
+<footer>
+  <script src="/js/knob-min.js"></script>
+</footer>
+  </body>
